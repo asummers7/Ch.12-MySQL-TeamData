@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 require('console.table')
-const {questions, departmentQuestions, roleQuestions, employeeQuestions} = require("./questions");
+const {questions, departmentQuestions, roleQuestions, employeeQuestions, updateQuestions} = require("./questions");
 const {
   viewAllDepartments,
   viewAllRoles,
@@ -31,7 +31,7 @@ const display = (isStartUp) => {
                 console.table(results);
                 display();
               });
-        break;
+              break;
       case "View all roles":
         db.query(viewAllRoles,function (err, results) {
             console.table(results);
@@ -47,12 +47,11 @@ const display = (isStartUp) => {
       case "add a department":
         inquirer.prompt(departmentQuestions)
         .then(responses => {
-            console.log('responses :>> ', responses);
             db.query(addDepartment(responses.department), function (err, results) {
                 console.log('department added!');
                 display();
-            });
-        })
+              });
+            })
         break;
       case "add a role":
         db.query('SELECT name, id from department', function (err, results) {
@@ -78,7 +77,7 @@ const display = (isStartUp) => {
         
         break;
       case "add an employee":
-        db.query('select rl.id, rl.title, emp.id as managerNumber, emp.first_name from employee as emp left join role as rl ON rl.id = emp.role_id', function (err,results){
+        db.query('select rl.id, rl.title, emp.id as managerNumber, CONCAT(emp.first_name, " ", emp.last_name) as names from role as rl left join employee as emp ON rl.id = emp.role_id', function (err,results){
           const roles = results.map(element => {
             return {
               name: element.title,
@@ -87,7 +86,7 @@ const display = (isStartUp) => {
           });
           const managers = results.map(element => {
             return {
-              name: element.first_name,
+              name: element.names,
               value: element.managerNumber,
             }
           });
@@ -101,6 +100,27 @@ const display = (isStartUp) => {
         })
         break;
       case "update an employee":
+        db.query('select rl.id, rl.title, emp.id as managerNumber, CONCAT(emp.first_name, " ", emp.last_name) as names from employee as emp left join role as rl ON rl.id = emp.role_id', function(err, results) {
+          const roles = results.map(element => {
+            return {
+              name: element.title,
+              value: element.id
+            }
+          });
+          const employees = results.map(element => {
+            return {
+              name: element.names,
+              value: element.managerNumber,
+            }
+          });
+          inquirer.prompt(updateQuestions(employees,roles))
+          .then(responses => {
+            db.query(updateEmployee(responses.employee, responses.role), function (err,results){
+              console.log("employee Updated!");
+              display();
+            })
+          })
+        })
         break;
       case "nothing":
         break;

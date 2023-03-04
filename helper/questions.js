@@ -73,6 +73,21 @@ const employeeQuestions = (roles, managers) => [
         choices: managers
     }
 
+];
+
+const updateQuestions = (employees, roles) => [
+    {
+        type: 'list', 
+        name: 'employee', 
+        message: 'Which employee would you like to update?',
+        choices: employees
+    },
+    {
+        type: 'list',
+        name: 'role',
+        message: 'What is their new role?',
+        choices: roles
+    }
 ]
 
 
@@ -80,5 +95,6 @@ module.exports = {
     questions,
     departmentQuestions,
     roleQuestions,
-    employeeQuestions
+    employeeQuestions,
+    updateQuestions
 }
