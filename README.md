@@ -5,9 +5,6 @@
 This is a project designed to introduce the student to mySQL. The goal of the project was to create a database with a set of data. Then with the use of express, make a connection to that database. We then used inquirer to prompt questions in the terminal and with the responses we either manipulated the or called the data in the database.  
 
 ## Table of Contents
-- [Ch.12-MySQL-TeamData](#ch12-mysql-teamdata)
-  - [Description](#description)
-  - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
   - [License](#license)
